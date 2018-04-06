@@ -1,0 +1,355 @@
+package hw8_trial2;
+
+
+import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.scene.Cursor;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
+//************************************************************************
+//  ClickDistance.java       Author: Lewis/Loftus
+//
+//  Demonstrates the handling of a mouse click event.
+//************************************************************************
+
+public class Disc extends Application
+{
+    private Line lineAB;
+    private Line lineBC;
+    private Line lineCA;
+    private Text distanceText;
+    private Circle Circ1;
+    private Circle Circ2;
+    private Circle Circ3;
+    private Circle Circ4;
+    private Text Ang1;
+    private Text Ang2;
+    private Text Ang3;
+    private Group Point1;
+    private Group Point2;
+    private Group Point3;
+    double clickX,clickY;
+    double TranX,TranY;
+	double TranA, TranB,TranC,TranD;
+	double M;
+	double offsetX,offsetY,newtranX,
+	newtranY;
+	double distanceCA, distanceAB, distanceBC;
+	double A, B, C;
+
+    //--------------------------------------------------------------------
+    //  Shows the distance between the origin (0, 0) and the point where
+    //  the mouse is clicked.
+    //--------------------------------------------------------------------
+    public void start(Stage primaryStage)
+    {
+    	//All the variable declarations and starting points
+        lineAB = new Line(200, 150, 150, 200);
+        lineBC = new Line(150, 200, 200, 250);
+        lineCA = new Line(200, 250, 200, 150);
+        Circ1 = new Circle(200,200,50);
+        Circ1.setFill(Color.TRANSPARENT);
+        Circ1.setStroke(Color.BLACK);
+        Ang1 = new Text(200, 135, "0.0");
+        Circ2 = new Circle(200,150,5);
+        Circ2.setFill(Color.PINK);
+        Circ2.setStroke(Color.BLACK);
+        Circ2.setCursor(Cursor.CLOSED_HAND);
+        Ang2 = new Text(120, 200, "0.0");
+        Circ3 = new Circle(150,200,5);
+        Circ3.setFill(Color.YELLOW);
+        Circ3.setStroke(Color.BLACK);
+        Circ3.setCursor(Cursor.CLOSED_HAND);
+        Ang3 = new Text(200, 275, "0.0");
+        Circ4 = new Circle(200,250,5);
+        Circ4.setFill(Color.LIGHTBLUE);
+        Circ4.setStroke(Color.BLACK);
+        Circ4.setCursor(Cursor.CLOSED_HAND);
+        Circ1.setMouseTransparent(false);
+        
+        
+        //Making groups out of the individual points
+        Point1 = new Group(Circ2, Ang1);
+        Point2 = new Group(Circ3, Ang2);
+        Point3 = new Group(Circ4, Ang3);
+        
+        
+        distanceAB = Math.sqrt(Math.pow((lineAB.getEndX() - lineAB.getStartX()), 2) + Math.pow((lineAB.getEndY() - lineAB.getStartY()), 2));
+    	distanceBC = Math.sqrt(Math.pow((lineBC.getEndX() - lineBC.getStartX()), 2) + Math.pow((lineBC.getEndY() - lineBC.getStartY()), 2)); 	
+    	distanceCA = Math.sqrt(Math.pow((lineCA.getEndX() - lineCA.getStartX()), 2) + Math.pow((lineCA.getEndY() - lineCA.getStartY()), 2));
+    	A = Math.acos((distanceBC * distanceBC - distanceCA * distanceCA - distanceAB * distanceAB) / (-2 * distanceCA * distanceAB))*(100);
+    	
+    	 
+    		B = Math.acos((distanceCA * distanceCA - distanceBC * distanceBC - distanceAB * distanceAB) / (-2 * distanceBC * distanceAB))*(100);
+    		C = Math.acos((distanceAB * distanceAB - distanceCA * distanceCA - distanceBC * distanceBC) / (-2 * distanceBC * distanceCA))*(100);
+    		
+        
+        //Circ2 action on press 
+        
+        Circ2.setOnMousePressed(action -> {
+        	clickX = action.getSceneX();
+             clickY = action.getSceneY();
+             TranX = ((Circle) (action.getSource())).getTranslateX();
+             TranY = ((Circle) (action.getSource())).getTranslateY();
+             
+            
+         
+            
+
+        
+        });
+        
+        //circ2 action on drag
+        Circ2.setOnMouseDragged(action -> {
+        	 offsetX = action.getSceneX() - clickX;
+        	 offsetY = action.getSceneY() - clickY;
+        	 newtranX = TranX + offsetX;
+        	 newtranY = TranY + offsetY;
+
+        	
+        	
+        	
+        	((Circle)(action.getSource())).setTranslateX(newtranX);
+        	((Circle)(action.getSource())).setTranslateY(newtranY);
+        	
+        	  lineAB.setStartX(action.getSceneX());
+              lineAB.setStartY(action.getSceneY());
+             
+              lineCA.setEndX(action.getSceneX());
+              lineCA.setEndY(action.getSceneY());
+              
+              //calculateLineA();
+              //calculateAngleB();
+              
+             
+              
+
+      
+        });
+        
+        Circ2.setOnMouseReleased(action -> {
+        	distanceAB = Math.sqrt(Math.pow((lineAB.getEndX() - lineAB.getStartX()), 2) + Math.pow((lineAB.getEndY() - lineAB.getStartY()), 2));
+        	distanceBC = Math.sqrt(Math.pow((lineBC.getEndX() - lineBC.getStartX()), 2) + Math.pow((lineBC.getEndY() - lineBC.getStartY()), 2)); 	
+        	distanceCA = Math.sqrt(Math.pow((lineCA.getEndX() - lineCA.getStartX()), 2) + Math.pow((lineCA.getEndY() - lineCA.getStartY()), 2));
+        	A = Math.acos((distanceBC * distanceBC - distanceCA * distanceCA - distanceAB * distanceAB) / (-2 * distanceCA * distanceAB))*(100);
+        	
+        	 
+        	String distanceStr = String.format("%.0f", A);
+            Ang1.setText("Degrees: "+ distanceStr );
+        	
+        });
+        
+        Circ3.setOnMouseReleased(action -> {
+        	distanceAB = Math.sqrt(Math.pow((lineAB.getEndX() - lineAB.getStartX()), 2) + Math.pow((lineAB.getEndY() - lineAB.getStartY()), 2));
+        	distanceBC = Math.sqrt(Math.pow((lineBC.getEndX() - lineBC.getStartX()), 2) + Math.pow((lineBC.getEndY() - lineBC.getStartY()), 2)); 	
+        	distanceCA = Math.sqrt(Math.pow((lineCA.getEndX() - lineCA.getStartX()), 2) + Math.pow((lineCA.getEndY() - lineCA.getStartY()), 2));
+        	B = Math.acos((distanceCA * distanceCA - distanceBC * distanceBC - distanceAB * distanceAB) / (-2 * distanceBC * distanceAB))*(100);
+    		
+        	 
+        	String distanceStr = String.format("%.0f", B);
+            Ang2.setText("Degrees: "+ distanceStr );
+        	
+        });
+        
+        Circ4.setOnMouseReleased(action -> {
+        	distanceAB = Math.sqrt(Math.pow((lineAB.getEndX() - lineAB.getStartX()), 2) + Math.pow((lineAB.getEndY() - lineAB.getStartY()), 2));
+        	distanceBC = Math.sqrt(Math.pow((lineBC.getEndX() - lineBC.getStartX()), 2) + Math.pow((lineBC.getEndY() - lineBC.getStartY()), 2)); 	
+        	distanceCA = Math.sqrt(Math.pow((lineCA.getEndX() - lineCA.getStartX()), 2) + Math.pow((lineCA.getEndY() - lineCA.getStartY()), 2));
+        	C = Math.acos((distanceCA * distanceCA - distanceBC * distanceBC - distanceAB * distanceAB) / (-2 * distanceBC * distanceAB))*(100);
+    		
+        	 
+        	String distanceStr = String.format("%.0f", C);
+            Ang3.setText("Degrees: "+ distanceStr );
+        	
+        });
+        
+        
+        Circ3.setOnMousePressed(action -> {
+        	clickX = action.getSceneX();
+            clickY = action.getSceneY();
+            TranX = ((Circle) (action.getSource())).getTranslateX();
+            TranY = ((Circle) (action.getSource())).getTranslateY();
+           
+         
+           
+           //double A = acos((distanceCA * distanceCA - distanceBC * distanceBC - distanceAB * distanceAB) / (-2 * distanceBC * distanceAB));
+         
+           //String distanceStr = String.format("%.2f", distance);
+           //distanceText.setText("Distance:  " + distanceStr);
+      
+       
+       });
+        Circ3.setOnMouseDragged(action -> {
+       	 offsetX = action.getSceneX() - clickX;
+       	 offsetY = action.getSceneY() - clickY;
+       	 newtranX = TranX + offsetX;
+       	 newtranY = TranY + offsetY;
+       
+       	
+       	
+       	((Circle)(action.getSource())).setTranslateX(newtranX);
+       	((Circle)(action.getSource())).setTranslateY(newtranY);
+       	
+       
+            lineAB.setEndX(action.getSceneX());
+            lineAB.setEndY(action.getSceneY());
+            lineBC.setStartX(action.getSceneX());
+            lineBC.setStartY(action.getSceneY());
+       
+        
+        });
+        
+        Circ4.setOnMousePressed(action -> {
+        	clickX = action.getSceneX();
+            clickY = action.getSceneY();
+            TranX = ((Circle) (action.getSource())).getTranslateX();
+            TranY = ((Circle) (action.getSource())).getTranslateY();
+           
+         
+           
+          
+       });
+        
+        Circ4.setOnMouseDragged(action -> {
+          	 offsetX = action.getSceneX() - clickX;
+           	 offsetY = action.getSceneY() - clickY;
+           	 newtranX = TranX + offsetX;
+           	 newtranY = TranY + offsetY;
+           	 
+           	 
+           
+           	
+           	
+           	((Circle)(action.getSource())).setTranslateX(newtranX);
+           	((Circle)(action.getSource())).setTranslateY(newtranY);
+        
+            lineBC.setEndX(action.getSceneX());
+            lineBC.setEndY(action.getSceneY());
+            lineCA.setStartX(action.getSceneX());
+            lineCA.setStartY(action.getSceneY());
+       
+        
+        });
+        
+        
+        Group root = new Group( lineAB,lineBC,lineCA, Circ1,Circ2,Circ3,Circ4, Ang1, Ang2, Ang3);
+        
+        Scene scene = new Scene(root, 400, 400, Color.WHITE);
+        //scene.setOnMouseClicked(this::processMouseClick);
+
+
+        primaryStage.setTitle("ANGLES");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+   
+    
+    //Mathematical Functions
+    //I got line distance using mathematics instead of built in functions as I didn't see one in the documentation
+    //The calculateIntersection is to calculate the intersections of the radius of the circle with the perimeter to
+    //'snap' the points to the circle and keep them there. 
+   /* public void processMouseClick(MouseEvent event)
+    {
+       
+       String distanceStr = String.format("%.2f", A);
+       Ang1.setText("Distance:  " + distanceStr);
+       String distanceStr2 = String.format("%.2f", B);
+       Ang2.setText("Distance:  " + distanceStr2);
+       String distanceStr3 = String.format("%.2f", A);
+       Ang3.setText("Distance:  " + distanceStr3);
+       
+    }
+    */
+    /*
+
+    public void calculateIntersection() {
+    	
+    	
+    }
+    public void calculateLineA() {
+    distanceBC = Math.sqrt(Math.pow((lineBC.getEndX() - lineBC.getStartX()), 2) + Math.pow((lineBC.getEndY() - lineBC.getStartY()), 2)); 	
+    	
+    }
+    
+    public void calculateLineB() {
+    	distanceCA = Math.sqrt(Math.pow((lineCA.getEndX() - lineCA.getStartX()), 2) + Math.pow((lineCA.getEndY() - lineCA.getStartY()), 2));
+    	
+    }
+    
+    public void calculateLineC() {
+    	distanceAB = Math.sqrt(Math.pow((lineAB.getEndX() - lineAB.getStartX()), 2) + Math.pow((lineAB.getEndY() - lineAB.getStartY()), 2));
+    	
+    }
+    public void calculateAngleA() {  
+    	A = Math.acos((distanceBC * distanceBC - distanceCA * distanceCA - distanceAB * distanceAB) / (-2 * distanceCA * distanceAB));
+
+    	
+    }
+    
+    public void calculateAngleB() {
+    	B = Math.acos((distanceCA * distanceCA - distanceBC * distanceBC - distanceAB * distanceAB) / (-2 * distanceBC * distanceAB));
+    	
+    	
+    }
+    
+    public void calculateAngleC() {
+    	
+    	C = Math.acos((distanceAB * distanceAB - distanceCA * distanceCA - distanceBC * distanceBC) / (-2 * distanceBC * distanceCA));
+    }
+    */
+    
+   /* 
+    	double A = lineAB.getStartX();
+    double B = lineAB.getStartY();
+    double C = lineAB.getEndX();
+    double D = lineAB.getEndY();
+    double distanceAB = Math.sqrt(A * C + B * D);
+    
+    double A2 = lineAB.getStartX();
+     double B2 = lineAB.getStartY();
+     double C2 = lineAB.getEndX();
+     double D2= lineAB.getEndY();
+     double distanceBC = Math.sqrt(A * C + B * D);
+    
+     double A3 = lineAB.getStartX();
+     double B3 = lineAB.getStartY();
+     double C3 = lineAB.getEndX();
+     double D3 = lineAB.getEndY();
+    double distanceCA = Math.sqrt(A * C + B * D);
+    
+    
+    */
+    	
+    	
+    	
+    
+   
+    
+    //--------------------------------------------------------------------
+    //  Resets the end point of the line to the location of the mouse
+    //  click event and updates the distance displayed.
+    //--------------------------------------------------------------------
+  /*  public void processMouseClick(MouseEvent event)
+    {
+    	double clickX = event.getX();
+        double clickY = event.getY();
+        
+        double distance = Math.sqrt(clickX * clickX + clickY * clickY);
+        
+        String distanceStr = String.format("%.2f", distance);
+        distanceText.setText("Distance:  " + distanceStr);
+    }
+    */
+    public static void main(String[] args)
+    {
+        launch(args);
+    }
+}
